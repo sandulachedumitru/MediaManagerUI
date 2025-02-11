@@ -1,6 +1,8 @@
+import '../screens/file_operation.dart';
+
 class ScanRequest {
   final String scanDirectory;
-  final String operation;
+  final FileOperation operation;
   final bool imageEnabled;
   final bool audioEnabled;
   final bool containerEnabled;
@@ -18,7 +20,7 @@ class ScanRequest {
   Map<String, dynamic> toJson() {
     return {
       'scanDirectory': scanDirectory,
-      'operation': operation,
+      'operation': operation.label,
       'imageEnabled': imageEnabled,
       'audioEnabled': audioEnabled,
       'containerEnabled': containerEnabled,
@@ -29,7 +31,7 @@ class ScanRequest {
   factory ScanRequest.fromJson(Map<String, dynamic> json) {
     return ScanRequest(
       scanDirectory: json['scanDirectory'],
-      operation: json['operation'],
+      operation: FileOperation.values.firstWhere((e) => e.label == json['operation']),
       imageEnabled: json['imageEnabled'],
       audioEnabled: json['audioEnabled'],
       containerEnabled: json['containerEnabled'],

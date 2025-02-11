@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/scan_request.dart';
 import '../services/api_service.dart';
+import 'file_operation.dart';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
@@ -13,7 +14,9 @@ class ScanScreen extends StatefulWidget {
 
 class _ScanScreenState extends State<ScanScreen> {
   final TextEditingController _directoryController = TextEditingController();
-  String _operation = 'MOVE';
+  final TextEditingController _fileOperationController = TextEditingController();
+
+  FileOperation _operation = FileOperation.copy;
   bool _imageEnabled = true;
   bool _audioEnabled = false;
   bool _containerEnabled = false;
@@ -44,18 +47,23 @@ class _ScanScreenState extends State<ScanScreen> {
               controller: _directoryController,
               decoration: const InputDecoration(labelText: 'Directory Path'),
             ),
-            DropdownButton<String>(
-              value: _operation,
-              onChanged: (String? newValue) {
+            const Padding(
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+            ),
+            DropdownMenu<FileOperation>(
+              initialSelection: FileOperation.copy,
+              controller: _fileOperationController,
+              requestFocusOnTap: true,
+              label: const Text('File Operation'),
+              onSelected: (FileOperation? newValue) {
                 setState(() {
                   _operation = newValue!;
                 });
               },
-              items: ['MOVE', 'COPY']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
+              dropdownMenuEntries: FileOperation.values.map<DropdownMenuEntry<FileOperation>>((operation) {
+                return DropdownMenuEntry<FileOperation>(
+                  value: operation,
+                  label: operation.label,
                 );
               }).toList(),
             ),

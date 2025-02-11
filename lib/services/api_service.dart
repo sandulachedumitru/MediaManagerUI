@@ -6,7 +6,7 @@ import '../models/media_files.dart';
 import '../models/scan_request.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:8080/api';
+  static const String baseUrl = 'http://localhost:8080/api/media';
 
   static Future<void> scanFiles(ScanRequest request) async {
     final url = Uri.parse('$baseUrl/scan');
