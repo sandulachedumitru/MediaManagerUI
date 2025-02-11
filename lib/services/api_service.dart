@@ -8,7 +8,7 @@ import '../models/scan_request.dart';
 class ApiService {
   static const String baseUrl = 'http://localhost:8080/api/media';
 
-  static Future<void> scanFiles(ScanRequest request) async {
+  static Future<String> scanFiles(ScanRequest request) async {
     final url = Uri.parse('$baseUrl/scan');
     final response = await http.post(
       url,
@@ -18,24 +18,23 @@ class ApiService {
 
     if (response.statusCode == 200) {
       print('Scan initiated successfully');
+      return response.body;
     } else {
       print('Failed to initiate scan: ${response.body}');
+      throw Exception("Failed to start scan");
     }
   }
 
-  static Future<List<MediaFiles>> fetchMediaFiles() async {
-    final url = Uri.parse('$baseUrl/media-files');
+  // Get the organized files
+  static Future<MediaFiles> fetchMediaFiles() async {
     final response = await http.get(
-      url,
-      headers: {'Content-Type': 'application/json'},
+        Uri.parse("$baseUrl/media-files")
     );
 
     if (response.statusCode == 200) {
-      List<dynamic> jsonList = jsonDecode(response.body);
-      return jsonList.map((json) => MediaFiles.fromJson(json)).toList();
+      return MediaFiles.fromJson(jsonDecode(response.body));
     } else {
-      print('Failed to fetch media files: ${response.body}');
-      return [];
+      throw Exception("Failed to fetch media files");
     }
   }
 }

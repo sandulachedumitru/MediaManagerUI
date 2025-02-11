@@ -1,8 +1,11 @@
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../models/scan_request.dart';
 import '../services/api_service.dart';
 import 'file_operation.dart';
+import 'files_screen.dart';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
@@ -15,6 +18,7 @@ class ScanScreen extends StatefulWidget {
 class _ScanScreenState extends State<ScanScreen> {
   final TextEditingController _directoryController = TextEditingController();
   final TextEditingController _fileOperationController = TextEditingController();
+  bool _isLoading = false;
 
   FileOperation _operation = FileOperation.copy;
   bool _imageEnabled = true;
@@ -22,17 +26,66 @@ class _ScanScreenState extends State<ScanScreen> {
   bool _containerEnabled = false;
   bool _archiveEnabled = false;
 
-  void _scanDirectory() {
-    final scanRequest = ScanRequest(
-      scanDirectory: _directoryController.text,
-      operation: _operation,
-      imageEnabled: _imageEnabled,
-      audioEnabled: _audioEnabled,
-      containerEnabled: _containerEnabled,
-      archiveEnabled: _archiveEnabled,
-    );
+  void _scanDirectory() async {
+    if (_directoryController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please select or enter a directory.")),
+      );
+      return;
+    }
 
-    ApiService.scanFiles(scanRequest);
+    setState(() => _isLoading = true);
+
+    try {
+      final scanRequest = ScanRequest(
+        scanDirectory: _directoryController.text,
+        operation: _operation,
+        imageEnabled: _imageEnabled,
+        audioEnabled: _audioEnabled,
+        containerEnabled: _containerEnabled,
+        archiveEnabled: _archiveEnabled,
+      );
+
+      String response = await ApiService.scanFiles(scanRequest);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response)),
+      );
+
+
+
+      // navigate to FileScreen after scan
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const FilesScreen()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${e.toString()}")),
+      );
+    }
+    setState(() => _isLoading = false);
+  }
+
+  void _pickDirectory() async {
+    if (kIsWeb) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Directory selection is not supported on web. Please enter the path manually.")),
+      );
+      return;
+    }
+
+    String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+
+    if (selectedDirectory == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("No directory selected!")),
+      );
+      return;
+    }
+
+    setState(() {
+      _directoryController.text = selectedDirectory;
+    });
   }
 
   @override
@@ -104,8 +157,8 @@ class _ScanScreenState extends State<ScanScreen> {
               },
             ),
             ElevatedButton(
-              onPressed: _scanDirectory,
-              child: const Text('Start Scan'),
+              onPressed: _isLoading ? null : _scanDirectory,
+              child: _isLoading ? const CircularProgressIndicator() : const Text('Start Scan'),
             ),
           ],
         ),

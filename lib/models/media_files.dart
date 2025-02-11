@@ -1,35 +1,12 @@
 class MediaFiles {
-  final String name;
-  final String path;
-  final String type;
-  final int size;
-  final DateTime createdAt;
+  final Map<String, List<String>> files;
 
-  MediaFiles({
-    required this.name,
-    required this.path,
-    required this.type,
-    required this.size,
-    required this.createdAt,
-  });
+  MediaFiles({required this.files});
 
   factory MediaFiles.fromJson(Map<String, dynamic> json) {
     return MediaFiles(
-      name: json['name'],
-      path: json['path'],
-      type: json['type'],
-      size: json['size'],
-      createdAt: DateTime.parse(json['createdAt']),
+      files: json.map((key, value) =>
+          MapEntry(key, List<String>.from(value as List))),
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'path': path,
-      'type': type,
-      'size': size,
-      'createdAt': createdAt.toIso8601String(),
-    };
   }
 }
