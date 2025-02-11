@@ -7,7 +7,8 @@ class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
 
   @override
-  _ScanScreenState createState() => _ScanScreenState();
+  // _ScanScreenState createState() => _ScanScreenState();
+  State<ScanScreen> createState() => _ScanScreenState();
 }
 
 class _ScanScreenState extends State<ScanScreen> {
@@ -17,8 +18,6 @@ class _ScanScreenState extends State<ScanScreen> {
   bool _audioEnabled = false;
   bool _containerEnabled = false;
   bool _archiveEnabled = false;
-  bool _videoEnabled = false;
-  bool _documentEnabled = false;
 
   void _scanDirectory() {
     final scanRequest = ScanRequest(
@@ -28,8 +27,6 @@ class _ScanScreenState extends State<ScanScreen> {
       audioEnabled: _audioEnabled,
       containerEnabled: _containerEnabled,
       archiveEnabled: _archiveEnabled,
-      videoEnabled: _videoEnabled,
-      documentEnabled: _documentEnabled,
     );
 
     ApiService.scanFiles(scanRequest);
@@ -54,7 +51,7 @@ class _ScanScreenState extends State<ScanScreen> {
                   _operation = newValue!;
                 });
               },
-              items: ['MOVE', 'COPY', 'DELETE']
+              items: ['MOVE', 'COPY']
                   .map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -95,24 +92,6 @@ class _ScanScreenState extends State<ScanScreen> {
               onChanged: (bool value) {
                 setState(() {
                   _archiveEnabled = value;
-                });
-              },
-            ),
-            SwitchListTile(
-              title: const Text('Enable Video Scanning'),
-              value: _videoEnabled,
-              onChanged: (bool value) {
-                setState(() {
-                  _videoEnabled = value;
-                });
-              },
-            ),
-            SwitchListTile(
-              title: const Text('Enable Document Scanning'),
-              value: _documentEnabled,
-              onChanged: (bool value) {
-                setState(() {
-                  _documentEnabled = value;
                 });
               },
             ),

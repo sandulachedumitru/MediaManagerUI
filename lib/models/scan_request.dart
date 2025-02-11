@@ -5,8 +5,6 @@ class ScanRequest {
   final bool audioEnabled;
   final bool containerEnabled;
   final bool archiveEnabled;
-  final bool videoEnabled;
-  final bool documentEnabled;
 
   ScanRequest({
     required this.scanDirectory,
@@ -15,8 +13,6 @@ class ScanRequest {
     required this.audioEnabled,
     required this.containerEnabled,
     required this.archiveEnabled,
-    required this.videoEnabled,
-    required this.documentEnabled,
   });
 
   Map<String, dynamic> toJson() {
@@ -27,8 +23,6 @@ class ScanRequest {
       'audioEnabled': audioEnabled,
       'containerEnabled': containerEnabled,
       'archiveEnabled': archiveEnabled,
-      'videoEnabled': videoEnabled,
-      'documentEnabled': documentEnabled,
     };
   }
 
@@ -40,8 +34,6 @@ class ScanRequest {
       audioEnabled: json['audioEnabled'],
       containerEnabled: json['containerEnabled'],
       archiveEnabled: json['archiveEnabled'],
-      videoEnabled: json['videoEnabled'],
-      documentEnabled: json['documentEnabled'],
     );
   }
 }
