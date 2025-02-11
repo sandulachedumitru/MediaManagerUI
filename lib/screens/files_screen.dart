@@ -4,57 +4,46 @@ import '../models/media_files.dart';
 import '../services/api_service.dart';
 
 class FilesScreen extends StatefulWidget {
+  const FilesScreen({super.key});
+
   @override
   _FilesScreenState createState() => _FilesScreenState();
 }
 
 class _FilesScreenState extends State<FilesScreen> {
-  final ApiService _apiService = ApiService();
-  late Future<MediaFiles> _mediaFilesFuture;
+  late Future<List<MediaFiles>> _mediaFiles;
 
   @override
   void initState() {
     super.initState();
-    _loadFiles();
-  }
-
-  void _loadFiles() {
-    setState(() {
-      _mediaFilesFuture = _apiService.fetchMediaFiles();
-    });
+    _mediaFiles = ApiService.fetchMediaFiles();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Organized Media Files"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadFiles,
-          ),
-        ],
-      ),
-      body: FutureBuilder<MediaFiles>(
-        future: _mediaFilesFuture,
+      appBar: AppBar(title: const Text('Media Files')),
+      body: FutureBuilder<List<MediaFiles>>(
+        future: _mediaFiles,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          } else if (!snapshot.hasData || snapshot.data!.files.isEmpty) {
-            return const Center(child: Text("No files found."));
+            return const Center(child: Text('Error loading media files'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No media files found'));
           }
 
-          final filesMap = snapshot.data!.files;
-          return ListView(
-            children: filesMap.entries.map((entry) {
-              return ExpansionTile(
-                title: Text(entry.key, style: const TextStyle(fontWeight: FontWeight.bold)),
-                children: entry.value.map((file) => ListTile(title: Text(file))).toList(),
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              final file = snapshot.data![index];
+              return ListTile(
+                title: Text(file.name),
+                subtitle: Text(file.path),
+                trailing: const Icon(Icons.insert_drive_file),
               );
-            }).toList(),
+            },
           );
         },
       ),
