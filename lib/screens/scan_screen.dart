@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../models/scan_request.dart';
 import '../services/api_service.dart';
-import 'file_operation.dart';
+import '../models/file_operation.dart';
 import 'files_screen.dart';
 
 class ScanScreen extends StatefulWidget {
@@ -98,7 +98,15 @@ class _ScanScreenState extends State<ScanScreen> {
           children: [
             TextField(
               controller: _directoryController,
-              decoration: const InputDecoration(labelText: 'Directory Path'),
+              decoration: InputDecoration(
+                labelText: "Directory path",
+                border: const OutlineInputBorder(),
+                suffixIcon: kIsWeb ? null : IconButton(
+                  icon: const Icon(Icons.folder_open),
+                  onPressed: _pickDirectory,
+                ),
+              ),
+              readOnly: kIsWeb ? false : true,
             ),
             const Padding(
                 padding: EdgeInsets.fromLTRB(0, 20, 0, 0),

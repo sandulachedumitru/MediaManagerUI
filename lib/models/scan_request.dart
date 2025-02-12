@@ -1,4 +1,4 @@
-import '../screens/file_operation.dart';
+import 'file_operation.dart';
 
 class ScanRequest {
   final String scanDirectory;
