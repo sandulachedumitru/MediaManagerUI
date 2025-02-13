@@ -27,7 +27,11 @@ class ApiService {
 
   static Future<void> abortScan() async {
     final response = await http.post(Uri.parse('$baseUrl/progress/abort'));
-    if (response.statusCode != 200) {
+
+    if (response.statusCode == 200) {
+      print('Abort initiated successfully');
+      return;
+    } else {
       throw Exception('Failed to abort scan');
     }
   }
