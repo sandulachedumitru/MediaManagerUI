@@ -25,6 +25,13 @@ class ApiService {
     }
   }
 
+  static Future<void> abortScan() async {
+    final response = await http.post(Uri.parse('$baseUrl/progress/abort'));
+    if (response.statusCode != 200) {
+      throw Exception('Failed to abort scan');
+    }
+  }
+
   // Get the organized files
   static Future<MediaFiles> fetchMediaFiles() async {
     final response = await http.get(

@@ -205,6 +205,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
+  sse_dart_client:
+    dependency: "direct main"
+    description:
+      name: sse_dart_client
+      sha256: "04561f9e6ff39649ef2ea47db044f14d0ec5e40034a119c99861c2184e65a629"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
   stack_trace:
     dependency: transitive
     description:
